@@ -31,6 +31,7 @@ class Game:
             self.ball.dir[0] *= -1
         elif self.ball.pos[0] < self.ball.radius or self.ball.pos[0] > self.W - self.ball.radius:
             self.goal()
+            self.ball.vel = 1
         if self.ball.pos[1] <= self.ball.radius or self.ball.pos[1] >= self.H - self.ball.radius:
             self.ball.dir[1] *= -1
         self.ball.update()
