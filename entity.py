@@ -33,17 +33,24 @@ class Ball:
         self.pos = [game.W // 2, game.H // 2]
         self.vel = 3
         self.dir = [1,1]
+        self.game = game
 
         self.trail = []
 
 
     def collision(self, paddles):
         bounding_box = [self.pos[0] - self.radius, self.pos[1] - self.radius, self.radius * 2, self.radius * 2]
+        
         for i, paddle in enumerate(paddles):
             if pygame.Rect(paddle.x, paddle.y, paddle.width, paddle.length).colliderect(bounding_box):
+                self.dir[0] *= -1
                 self.pos[0] = paddle.x - self.radius - 1 if i else paddle.x + paddle.width + self.radius + 1
                 self.vel += 0.01
                 return True
+        
+        if bounding_box[1] <= 0 or bounding_box[1] >= self.game.H - self.radius:
+            self.dir[1] *= -1
+            return True
                 
 
     def update(self):

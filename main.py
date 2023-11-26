@@ -29,19 +29,11 @@ class Game:
 
 
     def update_movement(self):
-        glow = self.ball.glow()
-        #self.win.blit(*glow)
-
         self.p1.update(self.movement[1] - self.movement[0])
         self.p2.update(self.opponent_movement[1] - self.opponent_movement[0])
         
-        if self.ball.collision([self.p1, self.p2]):
-            self.ball.dir[0] *= -1
-        elif self.ball.pos[0] < self.ball.radius or self.ball.pos[0] > self.W - self.ball.radius:
-            self.goal()
-            self.ball.vel = 3 + 0.1 * max(self.p1.score, self.p1.score)
-        if self.ball.pos[1] <= self.ball.radius or self.ball.pos[1] >= self.H - self.ball.radius:
-            self.ball.dir[1] *= -1
+        self.ball.collision([self.p1, self.p2])
+        self.goal()
         self.ball.update()
 
         self.p1.render(self.win)
@@ -63,13 +55,16 @@ class Game:
         self.win.blit(score_R, (x2, y))
 
     def goal(self):
-        if self.ball.pos[0] > self.W//2:
-            self.p1.score += 1
-        else:
-            self.p2.score += 1
-        print(f'{self.p1.score} - {self.p2.score}')
-        self.ball.pos[0] = self.W//2
-        self.ball.dir[0] *= -1
+        if self.ball.pos[0] < self.ball.radius or self.ball.pos[0] > self.W - self.ball.radius:
+            if self.ball.pos[0] > self.W//2:
+                self.p1.score += 1
+            else:
+                self.p2.score += 1
+            print(f'{self.p1.score} - {self.p2.score}')
+            self.ball.pos[0] = self.W//2
+            self.ball.dir[0] *= -1
+            self.ball.vel = 3 + 0.1 * max(self.p1.score, self.p1.score)
+
 
 
     def run(self):
