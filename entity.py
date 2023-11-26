@@ -14,7 +14,9 @@ class Paddle:
         self.score = 0
 
     def update(self, pos=0):
-        self.y += pos*self.vel
+        temp_y = self.y + pos * self.vel
+        if self.vel * 2 < temp_y < self.game.H - self.vel * 2 - self.length:
+            self.y = temp_y
 
     def render(self, surface):
         pygame.draw.rect(surface, self.color, [self.x, self.y, self.width, self.length])
@@ -30,8 +32,9 @@ class Ball:
 
     def collision(self, paddles):
         bounding_box = [self.pos[0] - self.radius, self.pos[1] - self.radius, self.radius * 2, self.radius * 2]
-        for paddle in paddles:
+        for i, paddle in enumerate(paddles):
             if pygame.Rect(paddle.x, paddle.y, paddle.width, paddle.length).colliderect(bounding_box):
+                self.pos[0] = paddle.x - self.radius - 1 if i else paddle.x + paddle.width + self.radius + 1
                 return True
 
     def update(self):
