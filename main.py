@@ -1,6 +1,7 @@
 import pygame
 from sys import exit
 from entity import *
+from random import random
 
 WHITE = pygame.Color("white")
 AQUA = pygame.Color("aquamarine1")
@@ -27,18 +28,22 @@ class Game:
         self.bg_overlay.fill((0,25,25))
         self.bg_overlay.set_alpha(200)
 
+        self.screenshake = 0
 
-    def update_movement(self):
+
+    def update_movement(self, surface):
         self.p1.update(self.movement[1] - self.movement[0])
         self.p2.update(self.opponent_movement[1] - self.opponent_movement[0])
         
-        self.ball.collision([self.p1, self.p2])
+        if self.ball.collision([self.p1, self.p2]):
+            self.screenshake = max(10, self.screenshake)
+
         self.goal()
         self.ball.update()
 
-        self.p1.render(self.win)
-        self.p2.render(self.win)
-        self.ball.render(self.win)
+        self.p1.render(surface)
+        self.p2.render(surface)
+        self.ball.render(surface)
 
     def draw_text(self, score1, score2):
         size = 250
@@ -56,6 +61,7 @@ class Game:
 
     def goal(self):
         if self.ball.pos[0] < self.ball.radius or self.ball.pos[0] > self.W - self.ball.radius:
+            self.screenshake = max(30, self.screenshake)
             if self.ball.pos[0] > self.W//2:
                 self.p1.score += 1
             else:
@@ -72,6 +78,9 @@ class Game:
             self.win.fill((0,0,0))
             self.draw_text(self.p1.score, self.p2.score)
             self.win.blit(self.bg_overlay, (0,0))
+
+            self.screenshake = max(0, self.screenshake - 1) #timer for shake
+
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     pygame.quit()
@@ -106,7 +115,9 @@ class Game:
                     if e.key == pygame.K_UP:
                         self.opponent_movement[0] = False
             
-            self.update_movement()
+            self.update_movement(self.win)
+            screenshake_offset = (random() * self.screenshake / 2, random() * self.screenshake / 2)
+            self.win.blit(self.win, screenshake_offset)
             pygame.display.update()
             self.clock.tick(120)
 
