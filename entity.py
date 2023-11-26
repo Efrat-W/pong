@@ -54,7 +54,7 @@ class Ball:
                 
 
     def update(self):
-        self.trail.append(Particle(self.pos[0], self.pos[1], self.radius * 2, (100,0,0)))
+        self.trail.append(Particle(self.pos[0], self.pos[1], self.radius * 2, pygame.Color("cadetblue")))
         for particle in self.trail:
             particle.update()
             if particle.radius <= 0:
@@ -74,6 +74,7 @@ class Ball:
     def render(self, surface):
         for particle in self.trail:
             particle.render(surface)
+        #pygame.draw.circle(surface, pygame.Color("cadetblue3"), self.pos, self.radius + 2)
         pygame.draw.circle(surface, self.color, self.pos, self.radius)
 
 
@@ -93,7 +94,7 @@ class Particle:
     def render(self, surface):
         radius = self.radius
         part_surface = pygame.Surface((radius*2, radius*2))
-        pygame.draw.circle(part_surface, pygame.Color("aquamarine3"), (radius, radius), radius)
+        pygame.draw.circle(part_surface, self.color, (radius, radius), radius)
         part_surface.set_colorkey((0,0,0))
         part_surface.set_alpha(20 * self.radius)
         surface.blit(part_surface, (int(self.pos[0] - radius), int(self.pos[1] - radius)))
