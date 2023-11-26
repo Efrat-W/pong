@@ -54,27 +54,30 @@ class Game:
                     pygame.quit()
                     exit()
 
-
+                #p1 player left
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_s:
                         self.movement[1] = True
                     if e.key == pygame.K_w:
                         self.movement[0] = True
-                    
+                #p2 player right
                     if e.key == pygame.K_DOWN:
                         self.opponent_movement[1] = True
                     if e.key == pygame.K_UP:
                         self.opponent_movement[0] = True
 
+                    #debugging ball hard reset
                     if e.key == pygame.K_SPACE:
                         self.ball.pos = [self.W//2, self.H//2]
                         self.ball.dir[0], self.ball.dir[1] = -1, -1
 
+                #p1 player left
                 if e.type == pygame.KEYUP:
                     if e.key == pygame.K_s:
                         self.movement[1] = False
                     if e.key == pygame.K_w:
                         self.movement[0] = False
+                #p2 player right
                     if e.key == pygame.K_DOWN:
                         self.opponent_movement[1] = False
                     if e.key == pygame.K_UP:
