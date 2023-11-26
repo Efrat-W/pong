@@ -16,13 +16,17 @@ class Game:
         self.ball = Ball(self, 10, WHITE)
 
         self.movement = [False, False]
+        self.opponent_movement = [False, False]
 
 
     def update_movement(self):
         self.p1.update(self.movement[1] - self.movement[0])
+        self.p2.update(self.opponent_movement[1] - self.opponent_movement[0])
         
-        if self.ball.pos[0] <= self.ball.radius or self.ball.pos[0] >= self.W - self.ball.radius or self.collision():
+        if self.ball.collision([self.p1, self.p2]):
             self.ball.dir[0] *= -1
+        elif self.ball.pos[0] < self.ball.radius or self.ball.pos[0] > self.W - self.ball.radius:
+            self.goal()
         if self.ball.pos[1] <= self.ball.radius or self.ball.pos[1] >= self.H - self.ball.radius:
             self.ball.dir[1] *= -1
         self.ball.update()
@@ -32,11 +36,15 @@ class Game:
         self.ball.render(self.win)
 
 
-    def collision(self):
-        if self.p1.y + self.ball.pos[1] <= self.p1.length and self.p1.x - self.ball.pos[0] <= self.p1.width + self.p1.margin:
-            self.p1.color = (0,0,250)
+    def goal(self):
+        if self.ball.pos[0] > self.W//2:
+            self.p1.score += 1
         else:
-            self.p1.color = WHITE
+            self.p2.score += 1
+        print(f'{self.p1.score} - {self.p2.score}')
+        self.ball.pos[0] = self.W//2
+        self.ball.dir[0] *= -1
+
 
     def run(self):
         while True:
@@ -46,17 +54,31 @@ class Game:
                     pygame.quit()
                     exit()
 
-                #client player movement
+
                 if e.type == pygame.KEYDOWN:
-                    if e.key == pygame.K_s or e.key == pygame.K_DOWN:
+                    if e.key == pygame.K_s:
                         self.movement[1] = True
-                    if e.key == pygame.K_w or e.key == pygame.K_UP:
+                    if e.key == pygame.K_w:
                         self.movement[0] = True
+                    
+                    if e.key == pygame.K_DOWN:
+                        self.opponent_movement[1] = True
+                    if e.key == pygame.K_UP:
+                        self.opponent_movement[0] = True
+
+                    if e.key == pygame.K_SPACE:
+                        self.ball.pos = [self.W//2, self.H//2]
+                        self.ball.dir[0], self.ball.dir[1] = -1, -1
+
                 if e.type == pygame.KEYUP:
-                    if e.key == pygame.K_s or e.key == pygame.K_DOWN:
+                    if e.key == pygame.K_s:
                         self.movement[1] = False
-                    if e.key == pygame.K_w or e.key == pygame.K_UP:
+                    if e.key == pygame.K_w:
                         self.movement[0] = False
+                    if e.key == pygame.K_DOWN:
+                        self.opponent_movement[1] = False
+                    if e.key == pygame.K_UP:
+                        self.opponent_movement[0] = False
             
             self.update_movement()
             pygame.display.update()
