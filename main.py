@@ -18,6 +18,10 @@ class Game:
         self.movement = [False, False]
         self.opponent_movement = [False, False]
 
+        self.bg_overlay = pygame.Surface((self.W, self.H))
+        self.bg_overlay.fill((0,0,0))
+        self.bg_overlay.set_alpha(200)
+
 
     def update_movement(self):
         self.p1.update(self.movement[1] - self.movement[0])
@@ -35,6 +39,19 @@ class Game:
         self.p2.render(self.win)
         self.ball.render(self.win)
 
+    def draw_text(self, score1, score2):
+        size = 250
+        margin = 100
+        font = pygame.font.SysFont("consolas", size, bold=True)
+        score_L = font.render(str(score1), False, WHITE)
+        score_R = font.render(str(score2), False, WHITE)
+        
+        x1 = self.W // 2 - int(score_L.get_width()) - margin
+        x2 = self.W // 2 + margin
+        y = (self.H - size) // 2
+        
+        self.win.blit(score_L, (x1, y))
+        self.win.blit(score_R, (x2, y))
 
     def goal(self):
         if self.ball.pos[0] > self.W//2:
@@ -48,7 +65,9 @@ class Game:
 
     def run(self):
         while True:
-            self.win.fill((0,0,0))
+            self.win.fill((0,0,0,))
+            self.draw_text(self.p1.score, self.p2.score)
+            self.win.blit(self.bg_overlay, (0,0))
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     pygame.quit()
