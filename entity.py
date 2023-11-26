@@ -1,4 +1,6 @@
 import pygame
+from random import randint
+
 
 class Paddle:
     def __init__(self, game, side, length, width, color):
@@ -23,6 +25,7 @@ class Paddle:
         pygame.draw.rect(surface, self.color, [self.x, self.y, self.width, self.length])
 
 
+
 class Ball:
     def __init__(self, game, radius, color):
         self.radius = radius
@@ -30,6 +33,9 @@ class Ball:
         self.pos = [game.W // 2, game.H // 2]
         self.vel = 3
         self.dir = [1,1]
+
+        self.trail = []
+
 
     def collision(self, paddles):
         bounding_box = [self.pos[0] - self.radius, self.pos[1] - self.radius, self.radius * 2, self.radius * 2]
@@ -41,8 +47,47 @@ class Ball:
                 
 
     def update(self):
+        self.trail.append(Particle(self.pos[0], self.pos[1], self.radius * 2, (100,0,0)))
+        for particle in self.trail:
+            particle.update()
+            if particle.radius <= 0:
+                self.trail.remove(particle)
+
         self.pos[0] += self.dir[0] * self.vel
         self.pos[1] += self.dir[1] * self.vel
 
+    def glow(self):
+        radius = self.radius * 2
+        surface = pygame.Surface((radius*2, radius*2))
+        pygame.draw.circle(surface, pygame.Color("aquamarine3"), (radius, radius), radius)
+        surface.set_colorkey((0,0,0))
+        surface.set_alpha(50)
+        return surface, (int(self.pos[0] - radius), int(self.pos[1] - radius))
+
     def render(self, surface):
+        for particle in self.trail:
+            particle.render(surface)
         pygame.draw.circle(surface, self.color, self.pos, self.radius)
+
+
+class Particle:
+    def __init__(self, x, y, size, color) -> None:
+        offset_x = randint(-5, 5)
+        offset_y = randint(-5, 5)
+        self.pos = [x + offset_x, y + offset_y]
+        self.radius = randint(size//4,size//2 + size//3)
+        #self.timer = self.radius
+        self.color = color
+
+    def update(self):
+        #self.timer -= 1
+        self.radius -= 1
+
+    def render(self, surface):
+        radius = self.radius
+        part_surface = pygame.Surface((radius*2, radius*2))
+        pygame.draw.circle(part_surface, pygame.Color("aquamarine3"), (radius, radius), radius)
+        part_surface.set_colorkey((0,0,0))
+        part_surface.set_alpha(20 * self.radius)
+        surface.blit(part_surface, (int(self.pos[0] - radius), int(self.pos[1] - radius)))
+        #pygame.draw.circle(surface, self.color, self.pos, self.radius)

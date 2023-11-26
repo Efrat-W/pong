@@ -1,9 +1,11 @@
 import pygame
 from sys import exit
 from entity import *
-#from math import abs
 
-WHITE = (255,255,255)
+WHITE = pygame.Color("white")
+AQUA = pygame.Color("aquamarine1")
+AQUA_DARK = pygame.Color("aquamarine3")
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -16,17 +18,20 @@ class Game:
 
         self.p1 = Paddle(self, 0, 100, 15, WHITE)
         self.p2 = Paddle(self, 1, 100, 15, WHITE)
-        self.ball = Ball(self, 10, WHITE)
+        self.ball = Ball(self, 15, AQUA)
 
         self.movement = [False, False]
         self.opponent_movement = [False, False]
 
         self.bg_overlay = pygame.Surface((self.W, self.H))
-        self.bg_overlay.fill((0,0,0))
+        self.bg_overlay.fill((0,25,25))
         self.bg_overlay.set_alpha(200)
 
 
     def update_movement(self):
+        glow = self.ball.glow()
+        #self.win.blit(*glow)
+
         self.p1.update(self.movement[1] - self.movement[0])
         self.p2.update(self.opponent_movement[1] - self.opponent_movement[0])
         
