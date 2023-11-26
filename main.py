@@ -10,6 +10,9 @@ class Game:
 
         self.W, self.H = 1024, 640
         self.win = pygame.display.set_mode((self.W, self.H))
+        pygame.display.set_caption("Infinite Pong Game")
+
+        self.clock = pygame.time.Clock()
 
         self.p1 = Paddle(self, 0, 100, 15, WHITE)
         self.p2 = Paddle(self, 1, 100, 15, WHITE)
@@ -31,7 +34,7 @@ class Game:
             self.ball.dir[0] *= -1
         elif self.ball.pos[0] < self.ball.radius or self.ball.pos[0] > self.W - self.ball.radius:
             self.goal()
-            self.ball.vel = 1 + 0.05 * max(self.p1.score, self.p1.score)
+            self.ball.vel = 3 + 0.1 * max(self.p1.score, self.p1.score)
         if self.ball.pos[1] <= self.ball.radius or self.ball.pos[1] >= self.H - self.ball.radius:
             self.ball.dir[1] *= -1
         self.ball.update()
@@ -66,7 +69,7 @@ class Game:
 
     def run(self):
         while True:
-            self.win.fill((0,0,0,))
+            self.win.fill((0,0,0))
             self.draw_text(self.p1.score, self.p2.score)
             self.win.blit(self.bg_overlay, (0,0))
             for e in pygame.event.get():
@@ -105,6 +108,7 @@ class Game:
             
             self.update_movement()
             pygame.display.update()
+            self.clock.tick(120)
 
 
 if __name__ == '__main__':
