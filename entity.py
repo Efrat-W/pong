@@ -20,8 +20,26 @@ class Paddle:
         if self.vel * 2 < temp_y < self.game.H - self.vel * 2 - self.length:
             self.y = temp_y
 
+    def glow(self, intensity = 0):
+        margin = self.margin * intensity
+        part_surface = pygame.Surface((self.width + 2*margin, self.length + 2 * margin))
+        radius = part_surface.get_width() // 2
+        width = self.width // 2
+        pygame.draw.rect(part_surface, self.color, (width,width, part_surface.get_width() - width * 2, part_surface.get_height()- width * 2))
+        pygame.draw.circle(part_surface, self.color, (radius, radius), radius)
+        pygame.draw.circle(part_surface, self.color, (radius, part_surface.get_height() - radius), radius)
+
+        
+
+        part_surface.set_alpha(max(0, margin))
+        return part_surface
 
     def render(self, surface):
+        #for i in range(10):
+        #    fi = i * 0.1
+        #    glow_surf = self.glow(fi)
+        #    surface.blit(glow_surf, (self.x - self.margin * fi, self.y - self.margin * fi))
+
         pygame.draw.circle(surface, self.color, (self.x + self.width // 2, self.y), self.width // 2)
         pygame.draw.rect(surface, self.color, [self.x, self.y, self.width, self.length])
         pygame.draw.circle(surface, self.color, (self.x + self.width // 2, self.y + self.length), self.width // 2)
