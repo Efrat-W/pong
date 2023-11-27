@@ -22,7 +22,9 @@ class Paddle:
 
 
     def render(self, surface):
+        pygame.draw.circle(surface, self.color, (self.x + self.width // 2, self.y), self.width // 2)
         pygame.draw.rect(surface, self.color, [self.x, self.y, self.width, self.length])
+        pygame.draw.circle(surface, self.color, (self.x + self.width // 2, self.y + self.length), self.width // 2)
 
 
 
