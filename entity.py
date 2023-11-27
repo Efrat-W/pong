@@ -95,8 +95,9 @@ class Particle:
 
     def render(self, surface):
         radius = self.radius
+        color = [min(255, c + radius) for c in self.color]
         part_surface = pygame.Surface((radius*2, radius*2))
-        pygame.draw.circle(part_surface, self.color, (radius, radius), radius)
+        pygame.draw.circle(part_surface, color, (radius, radius), radius)
         part_surface.set_colorkey((0,0,0))
         part_surface.set_alpha(20 * self.radius)
         surface.blit(part_surface, (int(self.pos[0] - radius), int(self.pos[1] - radius)))
