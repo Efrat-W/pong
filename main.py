@@ -17,8 +17,8 @@ class Game:
 
         self.clock = pygame.time.Clock()
 
-        self.p1 = Paddle(self, 0, 100, 15, WHITE)
-        self.p2 = Paddle(self, 1, 100, 15, WHITE)
+        self.p1 = Paddle(self, 0, 50, 15, WHITE)
+        self.p2 = Paddle(self, 1, 50, 15, WHITE)
         self.ball = Ball(self, 15, AQUA)
 
         self.movement = [False, False]
@@ -29,6 +29,7 @@ class Game:
         self.bg_overlay.set_alpha(200)
 
         self.screenshake = 0
+        self.glow = 0
 
 
     def update_movement(self, surface):
@@ -60,8 +61,10 @@ class Game:
         self.win.blit(score_R, (x2, y))
 
     def goal(self):
+        
         if self.ball.pos[0] < self.ball.radius or self.ball.pos[0] > self.W - self.ball.radius:
             self.screenshake = max(30, self.screenshake)
+            self.glow = 0.3
             if self.ball.pos[0] > self.W//2:
                 self.p1.score += 1
             else:
@@ -116,6 +119,13 @@ class Game:
                         self.opponent_movement[0] = False
             
             self.update_movement(self.win)
+            if self.glow > 0.01:
+                part_surf = pygame.Surface((self.W, self.H))
+                pygame.draw.rect(part_surf, AQUA, (0,0,self.W,self.H))
+                part_surf.set_alpha(100 * self.glow)
+                self.win.blit(part_surf, (0,0, self.W, self.H))
+                self.glow -= 0.005
+
             screenshake_offset = (random() * self.screenshake / 2, random() * self.screenshake / 2)
             self.win.blit(self.win, screenshake_offset)
             pygame.display.update()
